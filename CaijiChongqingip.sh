@@ -288,7 +288,7 @@ speed_test(){
         fi
     done
 
-    if [[ "$raw_speed" =~ ^[0-9\.]+$ && $(echo "$raw_speed > 0" | bc) -eq 1 ]]; then
+    if [[ "$raw_speed" =~ ^[0-9\.]+$ && $(echo "$raw_speed > 0" | bc -l) -eq 1 ]]; then
         if (( $(echo "$raw_speed >= 1048576" | bc -l) )); then
             a=$(echo "scale=2; $raw_speed / 1048576" | bc)M
         elif (( $(echo "$raw_speed >= 1024" | bc -l) )); then
@@ -378,17 +378,10 @@ log_print "${city} 测速完成，文件输出至 txt/${city}.txt，仅保留 >=
 
 cleanup 0
 
-# 单城市模式：加密明文zubo.txt，输出 zubo.enc，和网页解密算法匹配
-if [ -f "zubo.txt" ] && [ -s "zubo.txt" ]; then
-    log_print "检测到zubo.txt，开始加密生成 zubo.enc"
-    openssl enc -aes-256-cbc -salt -in zubo.txt -out zubo.enc -k "$ZUBO_PASSWORD"
-else
-    log_print "zubo.txt 文件为空或不存在，跳过加密，不生成zubo.enc"
-fi
-
-# 新建functions目录，生成密码验证js
-mkdir -p dist/functions
-cat > dist/functions/_middleware.js <<'EOF'
+# ============【部署相关：根目录生成functions中间件 + dist静态目录】============
+# 在仓库根目录创建functions（CF Pages Function必须放在根目录！！）
+mkdir -p functions
+cat > functions/_middleware.js <<'EOF'
 export async function onRequest({ request, env, next }) {
   const username = env.BASIC_AUTH_USERNAME;
   const password = env.BASIC_AUTH_PASSWORD;
@@ -412,3 +405,11 @@ export async function onRequest({ request, env, next }) {
 }
 EOF
 
+# 创建dist文件夹，存放静态文件
+mkdir -p dist
+# 复制加密文件到dist
+cp zubo.enc dist/
+# 将zubo.txt复制重命名为zubo.m3u放到dist，供播放器读取
+cp zubo.txt dist/zubo.m3u
+# 如需保留明文zubo.txt到CF，取消下面这行注释
+# cp zubo.txt dist/
