@@ -1,4 +1,4 @@
-name: CaijiBeijingip
+name: CaijiChongqingip
 permissions:
   contents: write
 on:
@@ -64,13 +64,13 @@ jobs:
           fi
           
           # 执行采集脚本
-          python ./CaijiBeijingip.py
-          bash ./CaijiBeijingip.sh 0
+          python ./CaijiChongqingip.py
+          bash ./CaijiChongqingip.sh 0
 
           # 拼接城市txt
           > zubo.txt
           city_list=(
-            "txt/Beijing_dianxin.txt"
+            "txt/Chongqing_liantong.txt"
             "txt/Shanghai_dianxin.txt"
             #"txt/Guangzhou_dianxin.txt"
           )
@@ -111,7 +111,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy . --project-name=iptv
+          command: pages deploy . --project-name=iptv1
 
       # 加密zubo.txt，加密完成删除明文
       - name: 加密zubo.txt生成zubo.enc
