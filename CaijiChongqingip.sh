@@ -92,12 +92,12 @@ mkdir -p ip txt template
 # ========= 多城市配置，自行修改stream组播地址 =========
 case $city_choice in
     1)
-        city="Beijing_dianxin"
-        stream="rtp/239.94.0.103:5140"
+        city="Chongqing_liantong"
+        stream="rtp/225.0.4.192:7980"
         ;;
     2)
         city="Shanghai_dianxin"
-        stream="rtp/233.18.204.67:5140"
+        stream="rtp/替换成广州组播地址"
         ;;
     3)
         city="Guangzhou_dianxin"
