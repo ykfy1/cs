@@ -122,7 +122,7 @@ if [ "$city_choice" -eq 0 ];then
 
     # 城市列表，和上面case里的城市一一对应
     city_arr=(
-        "Beijing_dianxin"
+        "Chongqing_liantong"
         "Shanghai_dianxin"
         "Guangzhou_dianxin"
     )
