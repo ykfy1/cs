@@ -56,7 +56,7 @@ jobs:
           find txt -type f -name "*.txt" -mtime +7 -delete
           echo "✅ 已删除txt目录下7天前的txt结果文件"
 
-      # =========【修复顺序：先备份旧文件，再跑脚本】=========
+      # =========【备份、采集、测速、拼接文件】=========
       - name: 获取源 + 多城市测速处理
         run: |
           export ZUBO_PASSWORD="${ZUBO_PASSWORD}"
@@ -126,16 +126,18 @@ jobs:
           # 兜底页面，保证部署目录有静态文件
           echo "<pre>IPTV源：<a href='./zubo.m3u'>zubo.m3u</a></pre>" > index.html
           echo "✅ 生成index.html兜底页面"
+        env:
+          ZUBO_PASSWORD: ${{ secrets.ZUBO_PASSWORD }}
 
-          # =========生成根目录functions密码中间件【重点！部署前生成】========
+      # =========单独步骤：生成functions密码中间件（修复原来133行EOF语法错误）========
+      - name: 生成CF的密码验证中间件
+        run: |
           mkdir -p functions
           cat > functions/_middleware.js <<'EOF'
 export async function onRequest({ request, env, next }) {
   const username = env.BASIC_AUTH_USERNAME;
   const password = env.BASIC_AUTH_PASSWORD;
-
   if (!username || !password) return next();
-
   const authHeader = request.headers.get("authorization");
   if (!authHeader) {
     return new Response("需要输入访问密码", {
@@ -143,7 +145,6 @@ export async function onRequest({ request, env, next }) {
       headers: { "WWW-Authenticate": 'Basic realm="IPTV"' },
     });
   }
-
   const [, base64] = authHeader.split(" ");
   const [user, pass] = atob(base64).split(":");
   if (user !== username || pass !== password) {
@@ -152,12 +153,9 @@ export async function onRequest({ request, env, next }) {
   return next();
 }
 EOF
-          echo "✅ 已生成根目录functions/_middleware.js 密码验证中间件"
-        env:
-          ZUBO_PASSWORD: ${{ secrets.ZUBO_PASSWORD }}
+          echo "✅ 已生成根目录functions/_middleware.js"
 
       # ====================== ✅【Cloudflare Pages部署 wrangler-action@v4 官方新版】 ======================
-      # 此时：functions文件夹、zubo.m3u、index.html全部就绪，部署到CF
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         continue-on-error: true
@@ -173,7 +171,6 @@ EOF
           if [ -f "zubo.txt" ] && [ -s "zubo.txt" ]; then
             log_print "检测到zubo.txt，开始加密生成 zubo.enc"
             openssl enc -aes-256-cbc -salt -in zubo.txt -out zubo.enc -k "$ZUBO_PASSWORD"
-            # 判断加密命令是否执行成功
             if [ $? -eq 0 ] && [ -f "zubo.enc" ] && [ -s "zubo.enc" ]; then
               log_print "✅ 加密成功，删除明文 zubo.txt"
               rm -f zubo.txt
@@ -222,15 +219,12 @@ EOF
           
           git reset HEAD .
           
-          # ✅重点：移除 git add txt/，txt文件夹已经在上一步被脚本删掉，不再上传明文！
-          # 提交：zubo.enc（zubo加密包） + txt_all.enc（所有城市txt加密包） + ip + logs
           if [[ -n $(git status --porcelain zubo.enc txt_all.enc ip/ logs/) ]]; then
             echo "✅ 源文件检测到更新，准备提交"
             git add zubo.enc
             git add txt_all.enc
             git add ip/
             git add logs/
-            # 【重点：不git add zubo.m3u，明文不会保存到github仓库】
             if [[ -n $(git status --porcelain) ]]; then
               git commit -m "🤖 GitHub Actions自动更新多城市源 ${{ github.run_id }}"
               git push
