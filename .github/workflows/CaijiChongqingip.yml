@@ -120,16 +120,44 @@ jobs:
           wc -l txt/*.txt
           wc -l zubo.txt
 
-          # ==========【关键：复制一份明文 zubo.m3u 用于CF部署，保留不动！】==========
+          # ==========【关键：复制一份明文 zubo.m3u 用于CF部署】==========
           cp zubo.txt zubo.m3u
           echo "✅ 已生成 zubo.m3u 用于Cloudflare Pages部署"
           # 兜底页面，保证部署目录有静态文件
           echo "<pre>IPTV源：<a href='./zubo.m3u'>zubo.m3u</a></pre>" > index.html
           echo "✅ 生成index.html兜底页面"
+
+          # =========生成根目录functions密码中间件【重点！部署前生成】========
+          mkdir -p functions
+          cat > functions/_middleware.js <<'EOF'
+export async function onRequest({ request, env, next }) {
+  const username = env.BASIC_AUTH_USERNAME;
+  const password = env.BASIC_AUTH_PASSWORD;
+
+  if (!username || !password) return next();
+
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader) {
+    return new Response("需要输入访问密码", {
+      status: 401,
+      headers: { "WWW-Authenticate": 'Basic realm="IPTV"' },
+    });
+  }
+
+  const [, base64] = authHeader.split(" ");
+  const [user, pass] = atob(base64).split(":");
+  if (user !== username || pass !== password) {
+    return new Response("账号密码错误", { status: 401 });
+  }
+  return next();
+}
+EOF
+          echo "✅ 已生成根目录functions/_middleware.js 密码验证中间件"
         env:
           ZUBO_PASSWORD: ${{ secrets.ZUBO_PASSWORD }}
 
       # ====================== ✅【Cloudflare Pages部署 wrangler-action@v4 官方新版】 ======================
+      # 此时：functions文件夹、zubo.m3u、index.html全部就绪，部署到CF
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         continue-on-error: true
@@ -178,6 +206,12 @@ jobs:
           fi
         env:
           ZUBO_PASSWORD: ${{ secrets.ZUBO_PASSWORD }}
+
+      # 清理functions文件夹，不提交到github仓库
+      - name: 清理functions临时文件夹
+        run: |
+          rm -rf functions
+          echo "✅ 删除本地临时functions，不提交到github仓库"
 
       # 文件校验恢复完成之后，再执行git add
       - name: 更新源（文件变更才提交，无变化直接跳过）
