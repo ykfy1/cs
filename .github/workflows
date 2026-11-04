@@ -136,7 +136,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy . --project-name=iptv
+          command: pages deploy . --project-name=iptv1
 
       # ==========【1. 加密zubo.txt生成zubo.enc，部署后删除zubo.txt明文】==========
       - name: 加密zubo.txt生成zubo.enc
