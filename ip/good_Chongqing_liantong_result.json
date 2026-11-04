@@ -1,56 +1,29 @@
 [
   {
-    "ip_port": "58.17.138.101:8002",
-    "ip": "58.17.138.101",
+    "ip_port": "58.17.134.3:8002",
+    "ip": "58.17.134.3",
     "port": "8002",
-    "version": "",
+    "version": "v. 1.0 Build 25",
     "max_client": "",
     "current_conn": "",
-    "geo": "重庆市 杨家坪 | CNC Group CHINA169 Chongqing Province Network"
+    "geo": "重庆市 重庆市 | CNC Group CHINA169 Chongqing Province Network"
   },
   {
-    "ip_port": "58.17.138.101:8005",
-    "ip": "58.17.138.101",
+    "ip_port": "58.17.134.3:8005",
+    "ip": "58.17.134.3",
+    "port": "8005",
+    "version": "v. 1.0 Build 25",
+    "max_client": "",
+    "current_conn": "",
+    "geo": "重庆市 重庆市 | CNC Group CHINA169 Chongqing Province Network"
+  },
+  {
+    "ip_port": "58.17.144.10:8005",
+    "ip": "58.17.144.10",
     "port": "8005",
     "version": "",
     "max_client": "",
     "current_conn": "",
-    "geo": "重庆市 杨家坪 | CNC Group CHINA169 Chongqing Province Network"
-  },
-  {
-    "ip_port": "58.17.138.102:8002",
-    "ip": "58.17.138.102",
-    "port": "8002",
-    "version": "",
-    "max_client": "",
-    "current_conn": "",
-    "geo": "重庆市 杨家坪 | CNC Group CHINA169 Chongqing Province Network"
-  },
-  {
-    "ip_port": "58.17.138.102:8005",
-    "ip": "58.17.138.102",
-    "port": "8005",
-    "version": "",
-    "max_client": "",
-    "current_conn": "",
-    "geo": "重庆市 杨家坪 | CNC Group CHINA169 Chongqing Province Network"
-  },
-  {
-    "ip_port": "58.17.138.103:8002",
-    "ip": "58.17.138.103",
-    "port": "8002",
-    "version": "",
-    "max_client": "",
-    "current_conn": "",
-    "geo": "重庆市 杨家坪 | CNC Group CHINA169 Chongqing Province Network"
-  },
-  {
-    "ip_port": "58.17.138.103:8005",
-    "ip": "58.17.138.103",
-    "port": "8005",
-    "version": "",
-    "max_client": "",
-    "current_conn": "",
-    "geo": "重庆市 杨家坪 | CNC Group CHINA169 Chongqing Province Network"
+    "geo": "重庆市 重庆市 | CNC Group CHINA169 Chongqing Province Network"
   }
 ]
