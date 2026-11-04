@@ -385,3 +385,30 @@ if [ -f "zubo.txt" ] && [ -s "zubo.txt" ]; then
 else
     log_print "zubo.txt 文件为空或不存在，跳过加密，不生成zubo.enc"
 fi
+
+# 新建functions目录，生成密码验证js
+mkdir -p dist/functions
+cat > dist/functions/_middleware.js <<'EOF'
+export async function onRequest({ request, env, next }) {
+  const username = env.BASIC_AUTH_USERNAME;
+  const password = env.BASIC_AUTH_PASSWORD;
+
+  if (!username || !password) return next();
+
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader) {
+    return new Response("需要输入访问密码", {
+      status: 401,
+      headers: { "WWW-Authenticate": 'Basic realm="IPTV"' },
+    });
+  }
+
+  const [, base64] = authHeader.split(" ");
+  const [user, pass] = atob(base64).split(":");
+  if (user !== username || pass !== password) {
+    return new Response("账号密码错误", { status: 401 });
+  }
+  return next();
+}
+EOF
+
