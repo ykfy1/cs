@@ -1,4 +1,4 @@
-name: CaijiChongqingip
+name: CaijiShanghaiip
 permissions:
   contents: write
 on:
@@ -64,14 +64,14 @@ jobs:
           fi
           
           # 执行采集脚本
-          python ./CaijiChongqingip.py
-          bash ./CaijiChongqingip.sh 0
+          python ./CaijiShanghaiip.py
+          bash ./CaijiShanghaiip.sh 0
 
           # 拼接城市txt
           > zubo.txt
           city_list=(
-            "txt/Chongqing_liantong.txt"
             "txt/Shanghai_dianxin.txt"
+            "txt/Beijing_dianxin.txt"
             #"txt/Guangzhou_dianxin.txt"
           )
           for f in "${city_list[@]}"; do
