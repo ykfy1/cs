@@ -93,7 +93,7 @@ mkdir -p ip txt template
 case $city_choice in
     1)
         city="Shanghai_dianxin"
-        stream="rtp/http://233.18.204.51:5140/"
+        stream="rtp/233.18.204.51:5140/"
         ;;
     2)
         city="Beijing_dianxin"
