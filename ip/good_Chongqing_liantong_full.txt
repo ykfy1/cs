@@ -1,3 +1,0 @@
-58.17.134.3:8002 | 版本:v. 1.0 Build 25 | 最大客户端: | 当前连接: | 重庆市 重庆市 | CNC Group CHINA169 Chongqing Province Network
-58.17.134.3:8005 | 版本:v. 1.0 Build 25 | 最大客户端: | 当前连接: | 重庆市 重庆市 | CNC Group CHINA169 Chongqing Province Network
-58.17.144.10:8005 | 版本: | 最大客户端: | 当前连接: | 重庆市 重庆市 | CNC Group CHINA169 Chongqing Province Network
